@@ -1,9 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="snowmanhunt:jar">
-    <output-path>$USER_HOME$/Desktop/nymcserver/plugins</output-path>
-    <root id="archive" name="snowmanhunt.jar">
-      <element id="module-output" name="snowmanhunt" />
-      <element id="extracted-dir" path="$USER_HOME$/Downloads/spigot-api-1.21-R0.1-20240807.214924-87-shaded.jar" path-in-jar="/" />
-    </root>
-  </artifact>
-</component>
