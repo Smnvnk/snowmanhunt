@@ -76,6 +76,8 @@ public class snowmanhuntdefault extends JavaPlugin {
             else if(label.equalsIgnoreCase("starthunt")){
                 if (sender.isOp()){
 
+                    Bukkit.broadcastMessage("Игра начинается!");
+
                     Bukkit.getPlayer(seeker).getAttribute(Attribute.GENERIC_JUMP_STRENGTH).setBaseValue(0.0);
                     Bukkit.getPlayer(seeker).getInventory().addItem(new ItemStack(Material.IRON_SWORD));
                     Bukkit.getPlayer(seeker).addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 1000000, 1), true);
