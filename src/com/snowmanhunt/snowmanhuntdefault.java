@@ -1,23 +1,16 @@
 package com.snowmanhunt;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ItemType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 public class snowmanhuntdefault extends JavaPlugin {
@@ -178,6 +171,15 @@ public class snowmanhuntdefault extends JavaPlugin {
                 if(sender.isOp()){
                     roundLength[0] = Integer.parseInt(args[0]);
                     sender.sendMessage(pluginLogo+"Round length is set to " + args[0] + " seconds.");
+                }else{
+                    sender.sendMessage(pluginLogo+"You should be an operator to perform this command.");
+                }
+            }
+
+            else if(label.equalsIgnoreCase("smhstopround")){
+                if(sender.isOp()){
+                    Bukkit.getScheduler().cancelTasks(this);
+                    reset();
                 }else{
                     sender.sendMessage(pluginLogo+"You should be an operator to perform this command.");
                 }

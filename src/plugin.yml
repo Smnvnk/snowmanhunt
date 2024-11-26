@@ -16,3 +16,6 @@ commands:
   smhroundlength:
     description: Sets round duration,
     usage: /smhroundlength *seconds*
+  smhstopround:
+    description: Stops game
+    usage: /smhstopround
