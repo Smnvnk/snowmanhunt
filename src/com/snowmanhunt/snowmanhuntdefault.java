@@ -17,6 +17,7 @@ public class snowmanhuntdefault extends JavaPlugin {
 
     String seeker;
     final int[] roundLength = {180};
+    int roundLength1 = roundLength[0];
 
     String pluginLogo = ChatColor.BLUE+"["+ChatColor.AQUA + "Snowman" + ChatColor.WHITE+"Hunt"+ChatColor.BLUE+"]"+ChatColor.WHITE + " ";
     String pluginLogoConsole = "[SnowmanHunt] ";
@@ -86,6 +87,8 @@ public class snowmanhuntdefault extends JavaPlugin {
 
             else if(label.equalsIgnoreCase("starthunt")){
                 if (sender.isOp()){
+
+                    roundLength[0] = roundLength1;
 
                     Bukkit.getPlayer(seeker).getAttribute(Attribute.GENERIC_JUMP_STRENGTH).setBaseValue(0.0);
                     Bukkit.getPlayer(seeker).getInventory().addItem(new ItemStack(Material.IRON_AXE));
@@ -170,6 +173,7 @@ public class snowmanhuntdefault extends JavaPlugin {
             else if(label.equalsIgnoreCase("smhroundlength")){
                 if(sender.isOp()){
                     roundLength[0] = Integer.parseInt(args[0]);
+                    roundLength1 = Integer.parseInt(args[0]);
                     sender.sendMessage(pluginLogo+"Round length is set to " + args[0] + " seconds.");
                 }else{
                     sender.sendMessage(pluginLogo+"You should be an operator to perform this command.");
