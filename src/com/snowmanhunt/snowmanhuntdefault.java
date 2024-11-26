@@ -16,6 +16,8 @@ import org.bukkit.scheduler.BukkitTask;
 public class snowmanhuntdefault extends JavaPlugin {
 
     String seeker;
+
+    //КОСТЫЛЬ 1
     final int[] roundLength = {180};
     int roundLength1 = roundLength[0];
 
@@ -37,9 +39,9 @@ public class snowmanhuntdefault extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player){
-            //=================
-            // /SEEKER COMMAND
-            //=================
+
+
+            // КОМАНДА /SEEKER
             if(label.equalsIgnoreCase("seeker")){
                 if(sender.isOp()){
                     if(args.length != 0){
@@ -81,13 +83,12 @@ public class snowmanhuntdefault extends JavaPlugin {
                     sender.sendMessage(pluginLogo + "You should be operator to perform this command.");
                 }
             }
-            //====================
-            // /STARTHUNT COMMAND
-            //====================
 
+            //КОМАНДА /STARTHUNT
             else if(label.equalsIgnoreCase("starthunt")){
                 if (sender.isOp()){
 
+                    //КОСТЫЛЬ 2
                     roundLength[0] = roundLength1;
 
                     Bukkit.getPlayer(seeker).getAttribute(Attribute.GENERIC_JUMP_STRENGTH).setBaseValue(0.0);
@@ -108,7 +109,7 @@ public class snowmanhuntdefault extends JavaPlugin {
 
                     Bukkit.broadcastMessage(pluginLogo+"Игра начинается!");
 
-
+                    //КОСТЫЛЬ 3
                     final boolean[] gameStarted = {false};
 
                     for(Player plr : Bukkit.getOnlinePlayers()){
@@ -118,7 +119,7 @@ public class snowmanhuntdefault extends JavaPlugin {
                     final int[] gameStartCount = {10};
 
                     //ТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕР
-                    //Bukkit.getScheduler().cancelTasks(this); //Остановить счетчик
+                    //БЛЯТЬ ЭТИ 37 СТРОК ДЕРЬМИЩА РАБОТАЮТ ЧЕРЕЗ ОЧКО БЕГЕМОТА
                     final BukkitTask task = Bukkit.getScheduler().runTaskTimer(this, ()->{
                         if(gameStartCount[0] > 0){
                             for(Player player : Bukkit.getOnlinePlayers()){
