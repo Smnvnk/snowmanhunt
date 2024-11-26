@@ -4,6 +4,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
@@ -22,6 +23,7 @@ import org.bukkit.scheduler.BukkitTask;
 public class snowmanhuntdefault extends JavaPlugin {
 
     String seeker;
+    final int[] roundLength = {180};
 
     String pluginLogo = ChatColor.BLUE+"["+ChatColor.AQUA + "Snowman" + ChatColor.WHITE+"Hunt"+ChatColor.BLUE+"]"+ChatColor.WHITE + " ";
     String pluginLogoConsole = "[SnowmanHunt] ";
@@ -93,7 +95,7 @@ public class snowmanhuntdefault extends JavaPlugin {
                 if (sender.isOp()){
 
                     Bukkit.getPlayer(seeker).getAttribute(Attribute.GENERIC_JUMP_STRENGTH).setBaseValue(0.0);
-                    Bukkit.getPlayer(seeker).getInventory().addItem(new ItemStack(Material.IRON_SWORD));
+                    Bukkit.getPlayer(seeker).getInventory().addItem(new ItemStack(Material.IRON_AXE));
                     Bukkit.getPlayer(seeker).addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 1000000, 1), true);
                     Bukkit.getPlayer(seeker).addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 1000000, 1), true);
                     Bukkit.getPlayer(seeker).addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 1000000, 2), true);
@@ -110,31 +112,53 @@ public class snowmanhuntdefault extends JavaPlugin {
 
                     Bukkit.broadcastMessage(pluginLogo+"Игра начинается!");
 
-                    final int[] roundLength = {20};
+
+                    final boolean[] gameStarted = {false};
 
                     for(Player plr : Bukkit.getOnlinePlayers()){
                         plr.setLevel(roundLength[0]);
                     }
 
-                    final int[] count = {5};
+                    final int[] gameStartCount = {10};
 
+                    //ТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕР
+                    //Bukkit.getScheduler().cancelTasks(this); //Остановить счетчик
                     final BukkitTask task = Bukkit.getScheduler().runTaskTimer(this, ()->{
-                        for(Player player : Bukkit.getOnlinePlayers()){
-                            player.sendTitle(ChatColor.RED+"Начало через...", ""+count[0]);
-                        }
-                        if(count[0] == 0){
+                        if(gameStartCount[0] > 0){
                             for(Player player : Bukkit.getOnlinePlayers()){
-                                player.sendTitle(ChatColor.RED+"Игра началась", "");
+                                player.sendMessage(ChatColor.RED+"Игра начнется через... "+gameStartCount[0], "");
                             }
-                            Bukkit.getScheduler().cancelTasks(this);
+                            gameStartCount[0]--;
                         }
-                        count[0]--;
+                        else{
+                            if(!gameStarted[0]){
+                                for(Player player : Bukkit.getOnlinePlayers()){
+                                    player.sendTitle(ChatColor.RED+"Прячтесь!", "Игра началась!");
+                                    gameStarted[0] = true;
+                                }
+                            }
+                            else{
+                                if(roundLength[0] > -1){
+                                    for(Player player : Bukkit.getOnlinePlayers()){
+                                        player.setLevel(roundLength[0]);
+                                    }
+                                    roundLength[0]--;
+                                }
+                                else{
+                                    for(Player player : Bukkit.getOnlinePlayers()){
+                                        player.sendTitle(ChatColor.RED+"Снеговик видит тебя!", "Последний выжившый побеждает");
+                                        if(!player.getName().equals(seeker)){
+                                            player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 1000000, 1));
+                                        }
+                                        else{
+                                            player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 1000000, 255));
+                                        }
+                                    }
+                                    Bukkit.getScheduler().cancelTasks(this);
+                                }
+                            }
+                        }
                     }, 0, 20);
-
-                    for(Player plr : Bukkit.getOnlinePlayers()){
-                        plr.setLevel(0);
-                    }
-
                 }
                 else{
                     sender.sendMessage(pluginLogo + "You should be operator to perform this command.");
@@ -147,6 +171,15 @@ public class snowmanhuntdefault extends JavaPlugin {
                 }
                 else{
                     sender.sendMessage(pluginLogo + "You should be operator to perform this command.");
+                }
+            }
+
+            else if(label.equalsIgnoreCase("smhroundlength")){
+                if(sender.isOp()){
+                    roundLength[0] = Integer.parseInt(args[0]);
+                    sender.sendMessage(pluginLogo+"Round length is set to " + args[0] + " seconds.");
+                }else{
+                    sender.sendMessage(pluginLogo+"You should be an operator to perform this command.");
                 }
             }
         }

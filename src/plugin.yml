@@ -11,5 +11,8 @@ commands:
     description: Starts the game.
     usage: /startHunt
   smhreset:
-    description: Resets all minigame effects
+    description: Resets all minigame effects.
     usage: /smhreset
+  smhroundlength:
+    description: Sets round duration,
+    usage: /smhroundlength *seconds*
