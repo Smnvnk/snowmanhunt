@@ -161,15 +161,6 @@ public class snowmanhuntdefault extends JavaPlugin {
                 }
             }
 
-            else if(label.equalsIgnoreCase("smhreset")){
-                if (sender.isOp()){
-                    reset();
-                }
-                else{
-                    sender.sendMessage(pluginLogo + "You should be operator to perform this command.");
-                }
-            }
-
             else if(label.equalsIgnoreCase("smhroundlength")){
                 if(sender.isOp()){
                     roundLength[0] = Integer.parseInt(args[0]);
