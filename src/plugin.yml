@@ -10,3 +10,6 @@ commands:
   starthunt:
     description: Starts the game.
     usage: /startHunt
+  smhreset:
+    description: Resets all minigame effects
+    usage: /smhreset
