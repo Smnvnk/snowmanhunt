@@ -11,15 +11,20 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scoreboard.Scoreboard;
 
 public class snowmanhuntdefault extends JavaPlugin {
 
     String seeker;
 
+    JavaPlugin plugin = this;
+
     //КОСТЫЛЬ 1
-    final int[] roundLength = {180};
-    int roundLength1 = roundLength[0];
+    int roundLength = 180;
+    int roundStart = 10;
+    int roundLength1 = roundLength;
 
     String pluginLogo = ChatColor.BLUE+"["+ChatColor.AQUA + "Snowman" + ChatColor.WHITE+"Hunt"+ChatColor.BLUE+"]"+ChatColor.WHITE + " ";
     String pluginLogoConsole = "[SnowmanHunt] ";
@@ -34,6 +39,10 @@ public class snowmanhuntdefault extends JavaPlugin {
                 player.removePotionEffect(effect);
             }
         }
+    }
+
+    public int getRunningTaskId(BukkitTask task){
+        return task.getTaskId();
     }
 
     @Override
@@ -89,10 +98,16 @@ public class snowmanhuntdefault extends JavaPlugin {
                 if (sender.isOp()){
 
                     //КОСТЫЛЬ 2
-                    roundLength[0] = roundLength1;
+                    roundLength = roundLength1;
+
+                    Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 
                     Bukkit.getPlayer(seeker).getAttribute(Attribute.GENERIC_JUMP_STRENGTH).setBaseValue(0.0);
-                    Bukkit.getPlayer(seeker).getInventory().addItem(new ItemStack(Material.IRON_AXE));
+
+                    ItemStack axe = new ItemStack(Material.IRON_AXE);
+
+                    Bukkit.getPlayer(seeker).getInventory().addItem(axe);
+
                     Bukkit.getPlayer(seeker).addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 1000000, 1), true);
                     Bukkit.getPlayer(seeker).addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 1000000, 1), true);
                     Bukkit.getPlayer(seeker).addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 1000000, 2), true);
@@ -109,53 +124,65 @@ public class snowmanhuntdefault extends JavaPlugin {
 
                     Bukkit.broadcastMessage(pluginLogo+"Игра начинается!");
 
-                    //КОСТЫЛЬ 3
-                    final boolean[] gameStarted = {false};
 
-                    for(Player plr : Bukkit.getOnlinePlayers()){
-                        plr.setLevel(roundLength[0]);
+                    for(Player player : Bukkit.getOnlinePlayers()){
+                        player.setLevel(roundLength);
                     }
 
-                    final int[] gameStartCount = {10};
+                    BukkitRunnable gameTimer = new BukkitRunnable() {
 
-                    //ТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕРТАЙМЕР
-                    //БЛЯТЬ ЭТИ 37 СТРОК ДЕРЬМИЩА РАБОТАЮТ ЧЕРЕЗ ОЧКО БЕГЕМОТА
-                    final BukkitTask task = Bukkit.getScheduler().runTaskTimer(this, ()->{
-                        if(gameStartCount[0] > 0){
-                            for(Player player : Bukkit.getOnlinePlayers()){
-                                player.sendMessage(ChatColor.RED+"Игра начнется через... "+gameStartCount[0], "");
-                            }
-                            gameStartCount[0]--;
-                        }
-                        else{
-                            if(!gameStarted[0]){
+                        @Override
+                        public void run() {
+                            if(roundLength > -1){
                                 for(Player player : Bukkit.getOnlinePlayers()){
-                                    player.sendTitle(ChatColor.RED+"Прячтесь!", "Игра началась!");
-                                    gameStarted[0] = true;
+                                    player.setLevel(roundLength);
                                 }
+                                roundLength--;
                             }
                             else{
-                                if(roundLength[0] > -1){
-                                    for(Player player : Bukkit.getOnlinePlayers()){
-                                        player.setLevel(roundLength[0]);
+                                for(Player player : Bukkit.getOnlinePlayers()){
+                                    player.sendTitle(ChatColor.RED+"Снеговик тебя видит!", "Последний выживший побеждает");
+
+                                    if(!player.getName().equals(seeker)){
+                                        player.removePotionEffect(PotionEffectType.SPEED);
+                                        player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 1000000, 1), true);
+                                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 1000000, 1), true);
                                     }
-                                    roundLength[0]--;
-                                }
-                                else{
-                                    for(Player player : Bukkit.getOnlinePlayers()){
-                                        player.sendTitle(ChatColor.RED+"Снеговик видит тебя!", "Последний выжившый побеждает");
-                                        if(!player.getName().equals(seeker)){
-                                            player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 1000000, 1));
-                                        }
-                                        else{
-                                            player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 1000000, 255));
-                                        }
+                                    else{
+                                        player.removePotionEffect(PotionEffectType.GLOWING);
+                                        player.removePotionEffect(PotionEffectType.SLOWNESS);
+                                        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1000000, 1), true);
+                                        player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 1000000, 255), true);
                                     }
-                                    Bukkit.getScheduler().cancelTasks(this);
                                 }
+                                cancel();
                             }
                         }
-                    }, 0, 20);
+                    };
+
+                    BukkitRunnable roundStartTimer = new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if(roundStart > 0){
+                                for(Player player : Bukkit.getOnlinePlayers()){
+                                    player.sendTitle(ChatColor.RED+"Игра начнется через...", ""+roundStart);
+                                }
+                                Bukkit.broadcastMessage(ChatColor.RED+"Игра начнется через... "+roundStart);
+
+                                roundStart--;
+                            }
+                            else{
+                                for(Player player : Bukkit.getOnlinePlayers()){
+                                    player.sendTitle(ChatColor.RED+"Игра началась!", "");
+                                }
+                                roundStart = 5;
+                                gameTimer.runTaskTimer(plugin, 0, 20);
+                                cancel();
+                            }
+                        }
+                    };
+
+                    roundStartTimer.runTaskTimer(plugin, 0, 20);
                 }
                 else{
                     sender.sendMessage(pluginLogo + "You should be operator to perform this command.");
@@ -164,7 +191,7 @@ public class snowmanhuntdefault extends JavaPlugin {
 
             else if(label.equalsIgnoreCase("smhroundlength")){
                 if(sender.isOp()){
-                    roundLength[0] = Integer.parseInt(args[0]);
+                    roundLength = Integer.parseInt(args[0]);
                     roundLength1 = Integer.parseInt(args[0]);
                     sender.sendMessage(pluginLogo+"Round length is set to " + args[0] + " seconds.");
                 }else{
