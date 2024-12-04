@@ -100,7 +100,7 @@ public class snowmanhuntdefault extends JavaPlugin {
                     //КОСТЫЛЬ 2
                     roundLength = roundLength1;
 
-                    Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
+                    reset();
 
                     Bukkit.getPlayer(seeker).getAttribute(Attribute.GENERIC_JUMP_STRENGTH).setBaseValue(0.0);
 
@@ -129,6 +129,38 @@ public class snowmanhuntdefault extends JavaPlugin {
                         player.setLevel(roundLength);
                     }
 
+
+
+//                    BukkitRunnable abilityTimer = new BukkitRunnable() {
+//                        int abilityCount = 5;
+//
+//                        @Override
+//                        public void run() {
+//                            if(abilityCount > 0){
+//                                if(abilityCount < 6){
+//                                    for(Player player : Bukkit.getOnlinePlayers()){
+//                                        player.sendTitle(ChatColor.RED+"Снеговик использует просвет через...", ""+abilityCount);
+//                                    }
+//                                }
+//                                abilityCount--;
+//                            }
+//                            else{
+//                                for(Player player : Bukkit.getOnlinePlayers()){
+//                                    player.sendTitle(ChatColor.RED+"Снеговик тебя видит!", "Замедление и свечение на 5 сек.");
+//                                    if(!player.getName().equals(seeker)){
+//                                        player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 5, 1), true);
+//                                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 5, 2), true);
+//                                    }
+//                                    else{
+//                                        player.addPotionEffect( new PotionEffect(PotionEffectType.SPEED, 5, 2), true);
+//                                    }
+//                                }
+//                                abilityCount = 5;
+//                                cancel();
+//                            }
+//                        }
+//                    };
+
                     BukkitRunnable gameTimer = new BukkitRunnable() {
 
                         @Override
@@ -137,6 +169,20 @@ public class snowmanhuntdefault extends JavaPlugin {
                                 for(Player player : Bukkit.getOnlinePlayers()){
                                     player.setLevel(roundLength);
                                 }
+
+                                if(roundLength % 20 == 0 & roundLength != 0 & roundLength != 180){
+                                    for(Player plr : Bukkit.getOnlinePlayers()){
+                                    plr.sendTitle(ChatColor.RED+"Снеговик использует просвет!", "Замедление и свечение на 5 сек.");
+                                    if(!plr.getName().equals(seeker)){
+                                        plr.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 120, 1), true);
+                                        plr.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 120, 2), true);
+                                    }
+                                    else{
+                                        plr.addPotionEffect( new PotionEffect(PotionEffectType.SPEED, 120, 2), true);
+                                    }
+                                }
+                                }
+
                                 roundLength--;
                             }
                             else{
